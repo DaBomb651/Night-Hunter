@@ -1,0 +1,108 @@
+// HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Follow Player Game</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    // JavaScript
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    document.body.appendChild(canvas);
+
+    // Resize canvas to fit the screen
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Player setup
+    const player = {
+      x: 0,
+      y: 0,
+      width: 50,
+      height: 50,
+      color: 'blue',
+      speed: 5,
+    };
+
+    const keys = {
+      w: false,
+      a: false,
+      s: false,
+      d: false,
+      ArrowUp: false,
+      ArrowLeft: false,
+      ArrowDown: false,
+      ArrowRight: false,
+    };
+
+    // Game loop variables
+    const world = {
+      width: 2000,
+      height: 2000,
+    };
+
+    function handleInput() {
+      if (keys.w || keys.ArrowUp) player.y -= player.speed;
+      if (keys.a || keys.ArrowLeft) player.x -= player.speed;
+      if (keys.s || keys.ArrowDown) player.y += player.speed;
+      if (keys.d || keys.ArrowRight) player.x += player.speed;
+
+      // Keep player within world bounds
+      player.x = Math.max(0, Math.min(world.width - player.width, player.x));
+      player.y = Math.max(0, Math.min(world.height - player.height, player.y));
+    }
+
+    function draw() {
+      // Calculate camera position to center the player
+      const cameraX = Math.max(0, Math.min(world.width - canvas.width, player.x + player.width / 2 - canvas.width / 2));
+      const cameraY = Math.max(0, Math.min(world.height - canvas.height, player.y + player.height / 2 - canvas.height / 2));
+
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw the world (optional background for debugging)
+      ctx.fillStyle = 'lightgray';
+      ctx.fillRect(-cameraX, -cameraY, world.width, world.height);
+
+      // Draw the player
+      ctx.fillStyle = player.color;
+      ctx.fillRect(player.x - cameraX, player.y - cameraY, player.width, player.height);
+    }
+
+    function gameLoop() {
+      handleInput();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    // Event listeners for input
+    window.addEventListener('keydown', (e) => {
+      if (e.key in keys) keys[e.key] = true;
+    });
+
+    window.addEventListener('keyup', (e) => {
+      if (e.key in keys) keys[e.key] = false;
+    });
+
+    // Start the game loop
+    gameLoop();
+  </script>
+</body>
+</html>

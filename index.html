@@ -22,7 +22,7 @@
     const ctx = canvas.getContext('2d');
     document.body.appendChild(canvas);
 
-    // Resize canvas to fit the screen
+    // Set initial canvas size
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
@@ -33,8 +33,8 @@
 
     // Player setup
     const player = {
-      x: 0,
-      y: 0,
+      x: 500,
+      y: 500,
       width: 50,
       height: 50,
       color: 'blue',
@@ -52,7 +52,7 @@
       ArrowRight: false,
     };
 
-    // Game loop variables
+    // World setup
     const world = {
       width: 2000,
       height: 2000,
@@ -71,19 +71,19 @@
 
     function draw() {
       // Calculate camera position to center the player
-      const cameraX = Math.max(0, Math.min(world.width - canvas.width, player.x + player.width / 2 - canvas.width / 2));
-      const cameraY = Math.max(0, Math.min(world.height - canvas.height, player.y + player.height / 2 - canvas.height / 2));
+      const cameraX = player.x + player.width / 2 - canvas.width / 2;
+      const cameraY = player.y + player.height / 2 - canvas.height / 2;
 
       // Clear canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw the world (optional background for debugging)
+      // Draw the world (background)
       ctx.fillStyle = 'lightgray';
       ctx.fillRect(-cameraX, -cameraY, world.width, world.height);
 
       // Draw the player
       ctx.fillStyle = player.color;
-      ctx.fillRect(player.x - cameraX, player.y - cameraY, player.width, player.height);
+      ctx.fillRect(canvas.width / 2 - player.width / 2, canvas.height / 2 - player.height / 2, player.width, player.height);
     }
 
     function gameLoop() {

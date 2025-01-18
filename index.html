@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Follow Player Game</title>
+  <title>Sidescroller Game</title>
   <style>
     body {
       margin: 0;
@@ -33,8 +33,8 @@
 
     // Player setup
     const player = {
-      x: 500,
-      y: 500,
+      x: 100,
+      y: canvas.height - 150,
       width: 50,
       height: 50,
       color: 'blue',
@@ -42,52 +42,46 @@
     };
 
     const keys = {
-      w: false,
       a: false,
-      s: false,
       d: false,
-      ArrowUp: false,
       ArrowLeft: false,
-      ArrowDown: false,
       ArrowRight: false,
     };
 
-    // World setup
-    const world = {
-      width: 2000,
-      height: 2000,
+    // Platform setup
+    const platform = {
+      y: canvas.height - 100,
+      height: 100,
+      color: 'green',
+      brownHeight: 30,
+      brownColor: 'brown',
     };
 
     function handleInput() {
-      if (keys.w || keys.ArrowUp) player.y -= player.speed;
       if (keys.a || keys.ArrowLeft) player.x -= player.speed;
-      if (keys.s || keys.ArrowDown) player.y += player.speed;
       if (keys.d || keys.ArrowRight) player.x += player.speed;
 
-      // Keep player within world bounds
-      player.x = Math.max(0, Math.min(world.width - player.width, player.x));
-      player.y = Math.max(0, Math.min(world.height - player.height, player.y));
+      // Keep player within screen bounds
+      player.x = Math.max(0, Math.min(canvas.width - player.width, player.x));
     }
 
     function draw() {
-      // Calculate camera position to center the player
-      let cameraX = player.x + player.width / 2 - canvas.width / 2;
-      let cameraY = player.y + player.height / 2 - canvas.height / 2;
-
-      // Clamp camera to world bounds
-      cameraX = Math.max(0, Math.min(world.width - canvas.width, cameraX));
-      cameraY = Math.max(0, Math.min(world.height - canvas.height, cameraY));
-
       // Clear canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw the world (background)
-      ctx.fillStyle = 'lightgray';
-      ctx.fillRect(-cameraX, -cameraY, world.width, world.height);
+      // Draw the sky
+      ctx.fillStyle = 'skyblue';
+      ctx.fillRect(0, 0, canvas.width, platform.y);
 
-      // Draw the player relative to the camera
+      // Draw the platform
+      ctx.fillStyle = platform.color;
+      ctx.fillRect(0, platform.y, canvas.width, platform.height - platform.brownHeight);
+      ctx.fillStyle = platform.brownColor;
+      ctx.fillRect(0, platform.y + platform.height - platform.brownHeight, canvas.width, platform.brownHeight);
+
+      // Draw the player
       ctx.fillStyle = player.color;
-      ctx.fillRect(player.x - cameraX, player.y - cameraY, player.width, player.height);
+      ctx.fillRect(player.x, player.y, player.width, player.height);
     }
 
     function gameLoop() {

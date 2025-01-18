@@ -71,8 +71,12 @@
 
     function draw() {
       // Calculate camera position to center the player
-      const cameraX = player.x + player.width / 2 - canvas.width / 2;
-      const cameraY = player.y + player.height / 2 - canvas.height / 2;
+      let cameraX = player.x + player.width / 2 - canvas.width / 2;
+      let cameraY = player.y + player.height / 2 - canvas.height / 2;
+
+      // Clamp camera to world bounds
+      cameraX = Math.max(0, Math.min(world.width - canvas.width, cameraX));
+      cameraY = Math.max(0, Math.min(world.height - canvas.height, cameraY));
 
       // Clear canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -81,9 +85,9 @@
       ctx.fillStyle = 'lightgray';
       ctx.fillRect(-cameraX, -cameraY, world.width, world.height);
 
-      // Draw the player
+      // Draw the player relative to the camera
       ctx.fillStyle = player.color;
-      ctx.fillRect(canvas.width / 2 - player.width / 2, canvas.height / 2 - player.height / 2, player.width, player.height);
+      ctx.fillRect(player.x - cameraX, player.y - cameraY, player.width, player.height);
     }
 
     function gameLoop() {
